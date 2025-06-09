@@ -26,11 +26,11 @@ async function login(req, res) {
       return customStatus(res, 401, "Invalid Credentials!");
     }
 
-    const payload = { userId: user._id };
+    const payload = { userId: user._id, name : user.name, email : user.email };
 
-    const token = jwt.sign({ payload }, process.env.SECRET_KEY);
+    const token = jwt.sign( payload , process.env.SECRET_KEY);
 
-    customStatus(res, 200, "Login Successful", token);
+    customStatus(res, 200, "Login Successful", {token});
   } catch (err) {
     customStatus(res, 500, err.message);
   }
