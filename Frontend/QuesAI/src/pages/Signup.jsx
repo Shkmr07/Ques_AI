@@ -1,9 +1,14 @@
 import { useState } from "react";
 import Logo from "../assets/Group 22.png"; // update path as needed
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { signup } from "../toolkit/reducers/user.slice";
 
 export default function Signup() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const { loading, isSignup } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm((prev) => ({
@@ -14,8 +19,12 @@ export default function Signup() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", form);
-    // Add API call or validation here
+    dispatch(signup(form))
+      .unwrap()
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => console.error("Signup Error", err.message));
   };
 
   return (
@@ -57,9 +66,10 @@ export default function Signup() {
           />
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
           >
-            Sign Up
+            {loading ? "Creating Account..." : "Sign up"}
           </button>
         </form>
 

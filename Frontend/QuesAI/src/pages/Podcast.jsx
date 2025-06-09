@@ -8,8 +8,25 @@ import Img1 from "../assets/image 1.png";
 import Img2 from "../assets/image 2.png";
 import Img3 from "../assets/uploads.png";
 import Cloud from "../assets/cloud_upload.png"
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getEpisode } from "../toolkit/reducers/episode.slice";
 
 export default function Podcast() {
+
+  const {id} = useParams()
+  const dispatch = useDispatch()
+  const {loading,episode}= useSelector(state => state.episode)
+
+  useEffect(()=>{
+    dispatch(getEpisode(id))
+  },[])
+  
+
+  
+
+
   const productList = [
     { icon: FaPlus, text: "Add your Podcast(s)" },
     { icon: FiEdit2, text: "Create & Repurpose" },
@@ -82,7 +99,7 @@ export default function Podcast() {
       <div className="w-full flex flex-col gap-5 bg-slate-100 px-10 py-5">
         <div className="flex gap-2 items-center text-slate-600">
           <GoHome className="text-xl" />
-          <p className="font-semibold">/ Sample Project</p>
+          <p className="font-semibold">/ sample project</p>
           <p className="font-semibold text-purple-700">/ Add your podcast</p>
         </div>
 

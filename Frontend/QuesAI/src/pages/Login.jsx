@@ -1,9 +1,36 @@
 import Logo from "../assets/QuesLogo 1.png";
 import Logo2 from "../assets/Group 22.png"
 import Mask from "../assets/Mask group.png"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../toolkit/reducers/user.slice";
 
 export default function Login() {
+
+  const [form,setForm] = useState({email : "",password: ""})
+  const {loading, error} = useSelector(state=>state.user)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  
+
+  function handleChange (e){
+    setForm((prev)=>{
+      return {...prev,[e.target.name] : e.target.value}
+    })
+  }
+
+  function handleSubmit(e){
+    e.preventDefault()
+    dispatch(login(form))
+      .unwrap()
+      .then(()=>{
+        navigate("/dashboard")
+      })
+      .catch(err=>console.error("Login Failed",err.message))
+
+  }
+
   return (
     <section className="flex items-center min-h-screen">
       <div className="w-full min-h-screen pl-20 pt-20 bg-[#904fb0]" style={{backgroundImage : `url(${Mask})`}}>
@@ -24,15 +51,21 @@ export default function Login() {
           Welcome to <strong>Ques.AI</strong>
         </h1>
 
-        <form className="flex flex-col mt-8 gap-3">
+        <form onSubmit={handleSubmit} className="flex flex-col mt-8 gap-3">
           <input
             className="pl-2 pr-4 py-2 bg-white border outline-none focus:border-blue-600 border-slate-400 rounded shadow"
             type="text"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
             placeholder="Email Address"
           />
           <input
             className="pl-2 pr-4 py-2 bg-white border outline-none focus:border-blue-600 border-slate-400 rounded shadow "
-            type="text"
+            type="password"
+            name="password"
+            value={form.password}
+            onChange={handleChange}
             placeholder="Password"
           />
           <div className="mt-2 flex justify-between items-center">
@@ -50,7 +83,8 @@ export default function Login() {
           <input
             className="cursor-pointer transition transform duration-300 ease-in-out mt-3 bg-purple-700 hover:bg-purple-800 hover:scale-105 text-white font-semibold rounded p-2"
             type="submit"
-            value="Login"
+            disabled={loading}
+            value={loading?"Logging...":"Login"}
           />
         </form>
 
